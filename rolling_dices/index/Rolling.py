@@ -1,15 +1,16 @@
+import sys
 import numpy as np
 from numpy import random
 from index.Dice import *
 from OpenGL.GLU import gluPerspective
-from OpenGL.GLUT import glutKeyboardFunc, glutSwapBuffers
+from OpenGL.GLUT import glutKeyboardFunc, glutSwapBuffers, glutDestroyWindow
 
 EXTREMIDADE_MIN = -10
 EXTREMIDADE_MAX = 10
 PROFUNDIDADE_MIN = -12
 PROFUNDIDADE_MAX = -20
 
-def iluminacao():
+def ilumination():
     glClearColor(0, 0, 0, 1)
 
     glEnable(GL_DEPTH_TEST)
@@ -45,77 +46,80 @@ def iluminacao():
     glLightfv(GL_LIGHT0, GL_SPECULAR, light[2])
     glLightfv(GL_LIGHT0, GL_POSITION, light[3])
 
-def rotacao():
+def rotation():
     if (random.randint(0, 2) == 0):
         return True
     else:
         return False
 
 class Rolling:
-    def __init__(self) -> None:
-        self.iterate()
-        self.jogar_dado = False
-        self.angulo = np.array([0, 0, 0])
-        self.visualizar_resultado = False
+    def __init__(self, window) -> None:
+        self.config()
+        self.window = window
+        self.roll_dice = False
+        self.angle = np.array([0, 0, 0])
+        self.finish = False
         self.axis = np.array([0, 0, -3])
-        self.velocidade = 0
+        self.speed = 0
     
-    def iterate(self) -> None:
+    def config(self) -> None:
         glDepthFunc(GL_LESS)
         glMatrixMode(GL_PROJECTION)
         gluPerspective(90, 1, 0.1, 100)
         self.dice = Dice()
-        iluminacao()
+        ilumination()
         glutKeyboardFunc(self.key_control)
     
-    def key_control(self, key, _, __) -> None:
-        if key == b" ":
+    def key_control(self, key, x, y) -> None:
+        if key == b' ':
             self.axis = [0, 0, -3.0]
-            self.jogar_dado = True
+            self.roll_dice = True
+        elif key == b'\x03':
+            glutDestroyWindow(self.window)
             
     def showScreen(self) -> None:
         glColor3f(1.0, 1.0, 1.0)
-        self.limpa_desenha()
+        self.clear_and_draw()
 
-        if self.jogar_dado:
-            rot_x = rotacao()
-            rot_y = rotacao()
-            rot_z = rotacao()
+        if self.roll_dice:
+            rot_x = rotation()
+            rot_y = rotation()
+            rot_z = rotation()
 
             while (self.axis[2] != (PROFUNDIDADE_MAX + PROFUNDIDADE_MIN)/2):
                 self.axis[2] -= 0.25
-                self.limpa_desenha()
+                self.clear_and_draw()
 
             for i in range (0, 500):
-                self.velocidade = i
+                self.speed = i
                 if self.axis[0] > EXTREMIDADE_MAX:
                     glColor3f(random.random(), random.random(), random.random())
                     rot_x = False
-                    rot_y = rotacao()
-                    rot_z = rotacao()
+                    rot_y = rotation()
+                    rot_z = rotation()
                 elif self.axis[0] < EXTREMIDADE_MIN:
                     glColor3f(random.random(), random.random(), random.random())
                     rot_x = True
-                    rot_y = rotacao()
-                    rot_z = rotacao()
+                    rot_y = rotation()
+                    rot_z = rotation()
                 if self.axis[1] > EXTREMIDADE_MAX:
                     glColor3f(random.random(), random.random(), random.random())
                     rot_y = False
-                    rot_x = rotacao()
-                    rot_z = rotacao()
+                    rot_x = rotation()
+                    rot_z = rotation()
                 elif self.axis[1] < EXTREMIDADE_MIN:
                     glColor3f(random.random(), random.random(), random.random())
                     rot_y = True
-                    rot_x = rotacao()
-                    rot_z = rotacao()
+                    rot_x = rotation()
+                    rot_z = rotation()
                 if self.axis[2] > PROFUNDIDADE_MIN:
                     rot_z = False
-                    rot_x = rotacao()
-                    rot_y = rotacao()
+                    rot_x = rotation()
+                    rot_y = rotation()
                 elif self.axis[2] < PROFUNDIDADE_MAX:
                     rot_z = True
-                    rot_x = rotacao()
-                    rot_y = rotacao()
+                    rot_x = rotation()
+                    rot_y = rotation()
 
                 if rot_x:
                     self.axis[0] += 0.25
@@ -129,7 +133,7 @@ class Rolling:
                     self.axis[2] += 0.25
                 else:
                     self.axis[2] -= 0.25
-                self.limpa_desenha()
+                self.clear_and_draw()
 
             while (self.axis[0] != 0 or self.axis[1] != 0):
                 if (self.axis[0] < 0):
@@ -143,52 +147,52 @@ class Rolling:
                 if (self.axis[2] < -3):
                     self.axis[2] += 0.25
 
-                self.limpa_desenha()
+                self.clear_and_draw()
 
             while self.axis[2] != -3:
                 if self.axis[2] < -3:
                     self.axis[2] += 0.25
-                self.limpa_desenha()
+                self.clear_and_draw()
             glColor3f(1.0, 1.0, 1.0)
-            self.jogar_dado = False
-            self.visualizar_resultado = True
-            self.ajeitaAngulo()
+            self.roll_dice = False
+            self.finish = True
+            self.fix_angle()
             
-    def girarDado(self):
-        if self.jogar_dado:
-            if (self.visualizar_resultado == False):
-                if self.velocidade < 250:
-                    self.angulo[0] += random.randint(1, self.velocidade+10)
-                    self.angulo[1] += random.randint(1, self.velocidade+10)
-                    self.angulo[2] += random.randint(1, self.velocidade+10)
+    def roll_the_dice(self) -> None:
+        if self.roll_dice:
+            if (self.finish == False):
+                if self.speed < 250:
+                    self.angle[0] += random.randint(1, self.speed+10)
+                    self.angle[1] += random.randint(1, self.speed+10)
+                    self.angle[2] += random.randint(1, self.speed+10)
                 else:
-                    self.angulo[0] += random.randint(1, 500-self.velocidade+10)
-                    self.angulo[1] += random.randint(1, 500-self.velocidade+10)
-                    self.angulo[2] += random.randint(1, 500-self.velocidade+10)
+                    self.angle[0] += random.randint(1, 500-self.speed+10)
+                    self.angle[1] += random.randint(1, 500-self.speed+10)
+                    self.angle[2] += random.randint(1, 500-self.speed+10)
 
-    def ajeitaAngulo(self):
-        self.angulo = np.array([self.angulo[0]%360, self.angulo[1]%360, self.angulo[2]%360])
+    def fix_angle(self) -> None:
+        self.angle = np.array([self.angle[0]%360, self.angle[1]%360, self.angle[2]%360])
         aux = np.zeros(3)
-        while (self.visualizar_resultado):
+        while (self.finish):
             for i in range (0, 3):
                 for j in range (0, 450, 90):
-                    temp = self.angulo[i] - j
-                    temp_2 = j - self.angulo[i]
+                    temp = self.angle[i] - j
+                    temp_2 = j - self.angle[i]
                     if ((temp <= 45 and temp >= 0) or (temp_2 >= -45 and temp_2 <= 0) or (temp_2 <= 45 and temp_2 >= 0) or (temp >= -45 and temp <= 0)):
                         aux[i] = j
-            self.angulo = aux
-            self.visualizar_resultado = False
+            self.angle = aux
+            self.finish = False
         self.axis[0] = 0.0
-        self.limpa_desenha()
+        self.clear_and_draw()
 
-    def limpa_desenha(self):
+    def clear_and_draw(self) -> None:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glLoadIdentity()
         glTranslatef(self.axis[0], self.axis[1], self.axis[2])
 
-        glRotatef(self.angulo[0], 1.0, 0.0, 0.0)
-        glRotatef(self.angulo[1], 0.0, 1.0, 0.0)
-        glRotatef(self.angulo[2], 0.0, 0.0, 1.0)
+        glRotatef(self.angle[0], 1.0, 0.0, 0.0)
+        glRotatef(self.angle[1], 0.0, 1.0, 0.0)
+        glRotatef(self.angle[2], 0.0, 0.0, 1.0)
         self.dice.print_cube()
-        self.girarDado()
+        self.roll_the_dice()
         glutSwapBuffers()
