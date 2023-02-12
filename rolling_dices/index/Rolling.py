@@ -1,4 +1,3 @@
-import sys
 import numpy as np
 from numpy import random
 from index.Dice import *
