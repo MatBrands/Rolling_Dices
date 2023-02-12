@@ -1,0 +1,9 @@
+name: rolling_dices_venv
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - pip
+  - numpy
+  - pyopengl
+  - pillow
