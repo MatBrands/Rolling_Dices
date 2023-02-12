@@ -4,10 +4,10 @@ from index.Dice import *
 from OpenGL.GLU import gluPerspective
 from OpenGL.GLUT import glutKeyboardFunc, glutSwapBuffers, glutDestroyWindow
 
-EXTREMIDADE_MIN = -10
-EXTREMIDADE_MAX = 10
-PROFUNDIDADE_MIN = -12
-PROFUNDIDADE_MAX = -20
+MIN_EXTREMITY = -10
+MAX_EXTREMITY = 10
+MIN_DEPTH = -12
+MAX_DEPTH = -20
 
 def ilumination():
     glClearColor(0, 0, 0, 1)
@@ -85,37 +85,37 @@ class Rolling:
             rot_y = rotation()
             rot_z = rotation()
 
-            while (self.axis[2] != (PROFUNDIDADE_MAX + PROFUNDIDADE_MIN)/2):
+            while (self.axis[2] != (MAX_DEPTH + MIN_DEPTH)/2):
                 self.axis[2] -= 0.25
                 self.clear_and_draw()
 
             for i in range (0, 500):
                 self.speed = i
-                if self.axis[0] > EXTREMIDADE_MAX:
+                if self.axis[0] > MAX_EXTREMITY:
                     glColor3f(random.random(), random.random(), random.random())
                     rot_x = False
                     rot_y = rotation()
                     rot_z = rotation()
-                elif self.axis[0] < EXTREMIDADE_MIN:
+                elif self.axis[0] < MIN_EXTREMITY:
                     glColor3f(random.random(), random.random(), random.random())
                     rot_x = True
                     rot_y = rotation()
                     rot_z = rotation()
-                if self.axis[1] > EXTREMIDADE_MAX:
+                if self.axis[1] > MAX_EXTREMITY:
                     glColor3f(random.random(), random.random(), random.random())
                     rot_y = False
                     rot_x = rotation()
                     rot_z = rotation()
-                elif self.axis[1] < EXTREMIDADE_MIN:
+                elif self.axis[1] < MIN_EXTREMITY:
                     glColor3f(random.random(), random.random(), random.random())
                     rot_y = True
                     rot_x = rotation()
                     rot_z = rotation()
-                if self.axis[2] > PROFUNDIDADE_MIN:
+                if self.axis[2] > MIN_DEPTH:
                     rot_z = False
                     rot_x = rotation()
                     rot_y = rotation()
-                elif self.axis[2] < PROFUNDIDADE_MAX:
+                elif self.axis[2] < MAX_DEPTH:
                     rot_z = True
                     rot_x = rotation()
                     rot_y = rotation()
