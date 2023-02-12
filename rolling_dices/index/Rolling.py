@@ -28,7 +28,7 @@ def ilumination():
     
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE)
 
-    globalAmb = [0.1, 0.1, 0.1, 1]
+    globalAmb = np.array([0.1, 0.1, 0.1, 1])
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmb)
     
     light = np.array(
@@ -71,7 +71,7 @@ class Rolling:
     
     def key_control(self, key, x, y) -> None:
         if key == b' ':
-            self.axis = [0, 0, -3.0]
+            self.axis = np.array([0, 0, -3.0])
             self.roll_dice = True
         elif key == b'\x03':
             glutDestroyWindow(self.window)
