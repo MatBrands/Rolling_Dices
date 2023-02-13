@@ -50,7 +50,6 @@ def rotation():
         return True
     else:
         return False
-
 class Rolling:
     def __init__(self, window) -> None:
         self.config()
@@ -69,7 +68,7 @@ class Rolling:
         ilumination()
         glutKeyboardFunc(self.key_control)
     
-    def key_control(self, key, x, y) -> None:
+    def key_control(self, key: str, x, y) -> None:
         if key == b' ':
             self.axis = np.array([0, 0, -3.0])
             self.roll_dice = True
@@ -81,77 +80,50 @@ class Rolling:
         self.clear_and_draw()
 
         if self.roll_dice:
-            rot_x = rotation()
-            rot_y = rotation()
-            rot_z = rotation()
+            rot_x, rot_y = rotation(), rotation()
 
             while (self.axis[2] != (MAX_DEPTH + MIN_DEPTH)/2):
                 self.axis[2] -= 0.25
                 self.clear_and_draw()
 
-            for i in range (0, 500):
-                self.speed = i
-                if self.axis[0] > MAX_EXTREMITY:
-                    glColor3f(random.random(), random.random(), random.random())
-                    rot_x = False
-                    rot_y = rotation()
-                    rot_z = rotation()
-                elif self.axis[0] < MIN_EXTREMITY:
-                    glColor3f(random.random(), random.random(), random.random())
-                    rot_x = True
-                    rot_y = rotation()
-                    rot_z = rotation()
-                if self.axis[1] > MAX_EXTREMITY:
-                    glColor3f(random.random(), random.random(), random.random())
-                    rot_y = False
-                    rot_x = rotation()
-                    rot_z = rotation()
-                elif self.axis[1] < MIN_EXTREMITY:
-                    glColor3f(random.random(), random.random(), random.random())
-                    rot_y = True
-                    rot_x = rotation()
-                    rot_z = rotation()
-                if self.axis[2] > MIN_DEPTH:
-                    rot_z = False
-                    rot_x = rotation()
-                    rot_y = rotation()
-                elif self.axis[2] < MAX_DEPTH:
-                    rot_z = True
-                    rot_x = rotation()
-                    rot_y = rotation()
+            for i in range(2):
+                if not i: a = 0; b = 150; c = 1
+                else: a = 150; b = 0; c = -1
+                    
+                for j in range(a, b, c):
+                    self.speed = j
+                    
+                    if self.axis[0] > MAX_EXTREMITY or self.axis[0] < MIN_EXTREMITY or self.axis[1] > MAX_EXTREMITY or self.axis[1] < MIN_EXTREMITY:
+                        glColor3f(random.random(), random.random(), random.random())
+                    
+                    if self.axis[0] > MAX_EXTREMITY: rot_x, rot_y = False, rotation()
+                    elif self.axis[0] < MIN_EXTREMITY: rot_x, rot_y = True, rotation()
+                    
+                    if self.axis[1] > MAX_EXTREMITY: rot_x, rot_y = rotation(), False
+                    elif self.axis[1] < MIN_EXTREMITY: rot_x, rot_y = rotation(), True
 
-                if rot_x:
-                    self.axis[0] += 0.25
-                else:
-                    self.axis[0] -= 0.25
-                if rot_y:
-                    self.axis[1] += 0.25
-                else:
-                    self.axis[1] -= 0.25
-                if rot_z:
-                    self.axis[2] += 0.25
-                else:
-                    self.axis[2] -= 0.25
-                self.clear_and_draw()
-
+                    if rot_x: self.axis[0] += np.round(random.uniform(.0, .4), 2)
+                    else: self.axis[0] -= np.round(random.uniform(.0, .4), 2)
+                    
+                    if rot_y: self.axis[1] += np.round(random.uniform(.0, .4), 2)
+                    else: self.axis[1] -= np.round(random.uniform(.0, .4), 2)
+                    
+                    self.clear_and_draw()
+                
             while (self.axis[0] != 0 or self.axis[1] != 0):
-                if (self.axis[0] < 0):
-                    self.axis[0] += 0.25
-                elif(self.axis[0] > 0):
-                    self.axis[0] -= 0.25
-                if (self.axis[1] < 0):
-                    self.axis[1] += 0.25
-                elif(self.axis[1] > 0):
-                    self.axis[1] -= 0.25
-                if (self.axis[2] < -3):
-                    self.axis[2] += 0.25
-
+                self.axis = np.round(self.axis, 1)
+                if (self.axis[0] < 0): self.axis[0] += 0.1
+                elif(self.axis[0] > 0): self.axis[0] -= 0.1
+                
+                if (self.axis[1] < 0): self.axis[1] += 0.1
+                elif(self.axis[1] > 0): self.axis[1] -= 0.1
                 self.clear_and_draw()
 
             while self.axis[2] != -3:
-                if self.axis[2] < -3:
-                    self.axis[2] += 0.25
+                if self.axis[2] < -3: self.axis[2] += 0.25
+                
                 self.clear_and_draw()
+                
             glColor3f(1.0, 1.0, 1.0)
             self.roll_dice = False
             self.finish = True
@@ -159,27 +131,31 @@ class Rolling:
             
     def roll_the_dice(self) -> None:
         if self.roll_dice:
-            if (self.finish == False):
+            if not self.finish:
                 if self.speed < 250:
-                    self.angle[0] += random.randint(1, self.speed+10)
-                    self.angle[1] += random.randint(1, self.speed+10)
-                    self.angle[2] += random.randint(1, self.speed+10)
+                    self.angle = np.array([
+                        self.angle[0] + random.randint(1, self.speed+10),
+                        self.angle[1] + random.randint(1, self.speed+10),
+                        self.angle[2] + random.randint(1, self.speed+10)
+                        ]
+                    )
                 else:
-                    self.angle[0] += random.randint(1, 500-self.speed+10)
-                    self.angle[1] += random.randint(1, 500-self.speed+10)
-                    self.angle[2] += random.randint(1, 500-self.speed+10)
+                    self.angle = np.array([
+                        self.angle[0] + random.randint(1, 500-self.speed+10),
+                        self.angle[1] + random.randint(1, 500-self.speed+10),
+                        self.angle[2] + random.randint(1, 500-self.speed+10)
+                        ]
+                    )
 
     def fix_angle(self) -> None:
         self.angle = np.array([self.angle[0]%360, self.angle[1]%360, self.angle[2]%360])
-        aux = np.zeros(3)
+        fixing_angle = np.zeros(3)
         while (self.finish):
             for i in range (0, 3):
                 for j in range (0, 450, 90):
-                    temp = self.angle[i] - j
-                    temp_2 = j - self.angle[i]
-                    if ((temp <= 45 and temp >= 0) or (temp_2 >= -45 and temp_2 <= 0) or (temp_2 <= 45 and temp_2 >= 0) or (temp >= -45 and temp <= 0)):
-                        aux[i] = j
-            self.angle = aux
+                    temp = self.angle[i] - j, j - self.angle[i]
+                    if ((-45 <= temp[0] <= 45) or (-45 <= temp[1] <= 45)): fixing_angle[i] = j
+            self.angle = fixing_angle
             self.finish = False
         self.axis[0] = 0.0
         self.clear_and_draw()
@@ -192,6 +168,8 @@ class Rolling:
         glRotatef(self.angle[0], 1.0, 0.0, 0.0)
         glRotatef(self.angle[1], 0.0, 1.0, 0.0)
         glRotatef(self.angle[2], 0.0, 0.0, 1.0)
+        
         self.dice.print_cube()
         self.roll_the_dice()
+        
         glutSwapBuffers()
