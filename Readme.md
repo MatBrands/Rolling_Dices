@@ -102,13 +102,13 @@ Projeto desenvolvido pelo Dev:
     │   ├── __init__.py
     │   ├── index
     │   │   ├── Dice.py
-    │   │   ├── Rolling.py
+    │   │   └── Rolling.py
     │   └── media
-    │       └── dice_1.png
-    │       └── dice_2.png
-    │       └── dice_3.png
-    │       └── dice_4.png
-    │       └── dice_5.png
+    │       ├── dice_1.png
+    │       ├── dice_2.png
+    │       ├── dice_3.png
+    │       ├── dice_4.png
+    │       ├── dice_5.png
     │       └── dice_6.png
     └── utils
         ├── environment.yml
