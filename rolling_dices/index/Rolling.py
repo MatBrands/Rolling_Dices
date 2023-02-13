@@ -76,7 +76,7 @@ class Rolling:
         elif key == b'\x03':
             glutDestroyWindow(self.window)
             
-    def showScreen(self) -> None:
+    def show_screen(self) -> None:
         glColor3f(1.0, 1.0, 1.0)
         self.clear_and_draw()
 

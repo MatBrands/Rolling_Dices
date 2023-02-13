@@ -11,6 +11,6 @@ if __name__ == '__main__':
     glutInitWindowPosition(-200, -200)
     windows = glutCreateWindow("Rolling Dices")
     rolling = Rolling(windows)
-    glutDisplayFunc(rolling.showScreen)
-    glutIdleFunc(rolling.showScreen)
+    glutDisplayFunc(rolling.show_screen)
+    glutIdleFunc(rolling.show_screen)
     glutMainLoop()
