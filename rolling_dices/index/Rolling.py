@@ -101,7 +101,7 @@ class Rolling:
                     
                     if self.axis[1] > MAX_EXTREMITY: rot_x, rot_y = random_bool(), False
                     elif self.axis[1] < MIN_EXTREMITY: rot_x, rot_y = random_bool(), True
-
+                    
                     if rot_x: self.axis[0] += np.round(random.uniform(.0, .4), 2)
                     else: self.axis[0] -= np.round(random.uniform(.0, .4), 2)
                     
