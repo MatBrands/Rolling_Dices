@@ -45,7 +45,7 @@ def ilumination():
     glLightfv(GL_LIGHT0, GL_SPECULAR, light[2])
     glLightfv(GL_LIGHT0, GL_POSITION, light[3])
 
-def rotation():
+def random_bool():
     if (random.randint(0, 2) == 0):
         return True
     else:
@@ -80,7 +80,7 @@ class Rolling:
         self.clear_and_draw()
 
         if self.roll_dice:
-            rot_x, rot_y = rotation(), rotation()
+            rot_x, rot_y = random_bool(), random_bool()
 
             while (self.axis[2] != (MAX_DEPTH + MIN_DEPTH)/2):
                 self.axis[2] -= 0.25
@@ -96,11 +96,11 @@ class Rolling:
                     if self.axis[0] > MAX_EXTREMITY or self.axis[0] < MIN_EXTREMITY or self.axis[1] > MAX_EXTREMITY or self.axis[1] < MIN_EXTREMITY:
                         glColor3f(random.random(), random.random(), random.random())
                     
-                    if self.axis[0] > MAX_EXTREMITY: rot_x, rot_y = False, rotation()
-                    elif self.axis[0] < MIN_EXTREMITY: rot_x, rot_y = True, rotation()
+                    if self.axis[0] > MAX_EXTREMITY: rot_x, rot_y = False, random_bool()
+                    elif self.axis[0] < MIN_EXTREMITY: rot_x, rot_y = True, random_bool()
                     
-                    if self.axis[1] > MAX_EXTREMITY: rot_x, rot_y = rotation(), False
-                    elif self.axis[1] < MIN_EXTREMITY: rot_x, rot_y = rotation(), True
+                    if self.axis[1] > MAX_EXTREMITY: rot_x, rot_y = random_bool(), False
+                    elif self.axis[1] < MIN_EXTREMITY: rot_x, rot_y = random_bool(), True
 
                     if rot_x: self.axis[0] += np.round(random.uniform(.0, .4), 2)
                     else: self.axis[0] -= np.round(random.uniform(.0, .4), 2)
